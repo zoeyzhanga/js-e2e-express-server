@@ -1,11 +1,5 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - main
-- release/*
 
 strategy:
   matrix:
@@ -23,20 +17,11 @@ pool:
 steps:
 - task: Maven@4
   inputs:
-    mavenPomFile: '$(system.defaultWorkingDirectory)/scim-parent/scim-web/pom.xml'
+    mavenPomFile: "pom.xml"
+    mavenOptions: "-Xmx3072m"
+    javaHomeOption: "JDKVersion"
+    jdkVersionOption: $(jdkVersion)
+    jdkArchitectureOption: "x64"
     publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '$(jdkVersion)'
-    mavenVersionOption: 'Default'
-    mavenOptions: '-Xmx3072m'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: false
-
-
-
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    testResultsFiles: "**/TEST-*.xml"
+    goals: "package"
